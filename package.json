@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev" : "nodemon index.js",
+    "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -23,5 +23,8 @@
   "homepage": "https://github.com/Hieunm54/phonebook_backend#readme",
   "devDependencies": {
     "nodemon": "^2.0.6"
+  },
+  "dependencies": {
+    "morgan": "^1.10.0"
   }
 }

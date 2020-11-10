@@ -1,5 +1,29 @@
 const express = require('express')
 const app = express()
+var morgan = require('morgan')
+app.use(express.json()) // middleware build-in
+
+//tu dinh nghia token moi ten body
+morgan.token('body', (request) => { // body chinh la ten thuoc tinh can in ra,no tra ve gtri JSON.Stringify
+    //console.log('helloo ',request.body)
+    return JSON.stringify(request.body);
+})
+//dung new morgan logger duoc dinh nghia san cac kieu tra ve
+app.use(morgan(':method :url :status :body :response-time')) // nhet body vao day
+// build tokens
+
+//using my own middleware
+const requestLogger = (request,response,next) =>{
+    console.log("method: ",request.method)
+    console.log("path: ",request.path)
+    console.log("body: ",request.body)
+    console.log('-----------------')
+    next(); // phai co next neu ko se bi tac
+}
+
+
+//app.use(requestLogger)
+
 
 let persons = 
 [
@@ -19,6 +43,13 @@ let persons =
         "id": 3
       }
 ]
+
+//middleware for catching request made to unknown routes 
+const unknownRoute = (request,response) =>{
+    response.status(404).send({error:'unknown endpoint'})
+}
+
+//http get - safety and idempotence
 
 app.get('/api/persons',(request,response) =>{
     response.json(persons);
@@ -41,8 +72,12 @@ app.get('/api/persons/:id',(request,response) =>{
     console.log('matched id: ',id);
     response.json(returnPerson);
 })
+
+
 //post new person
-app.use(express.json())
+// neither safety nor idempotence 
+
+
 app.post('/api/persons',(request,response) =>{
     const body = request.body;
     const newPerson = {
@@ -61,11 +96,13 @@ app.post('/api/persons',(request,response) =>{
             error : 'name must be unique. Mind the case'
         })
     }
-    console.log('new person: ',newPerson);
+    //console.log('new person: ',newPerson);
 
     persons = persons.concat(newPerson);
     response.json(newPerson);
 })
+
+
 
 //delete person
 app.delete('/api/persons/:id',(request,response) =>{
@@ -76,6 +113,7 @@ app.delete('/api/persons/:id',(request,response) =>{
     response.status(204).end()
 })
 
+app.use(unknownRoute);
 
 
 const PORT = 3001
