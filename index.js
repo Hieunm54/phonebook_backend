@@ -5,6 +5,8 @@ const cors = require('cors')
 
 app.use(cors())
 
+app.use(express.static('build'))
+
 app.use(express.json()) // middleware build-in
 
 //tu dinh nghia token moi ten body
