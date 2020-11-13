@@ -1,6 +1,10 @@
 const express = require('express')
 const app = express()
 var morgan = require('morgan')
+const cors = require('cors')
+
+app.use(cors())
+
 app.use(express.json()) // middleware build-in
 
 //tu dinh nghia token moi ten body
@@ -22,7 +26,7 @@ const requestLogger = (request,response,next) =>{
 }
 
 
-//app.use(requestLogger)
+app.use(requestLogger)
 
 
 let persons = 
@@ -116,7 +120,7 @@ app.delete('/api/persons/:id',(request,response) =>{
 app.use(unknownRoute);
 
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT,() =>{
     console.log(`app is running at Port: ${PORT}`);
 })
